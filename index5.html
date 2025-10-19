@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Digimon</title>
+    <link rel="stylesheet" href="style5.css">
+</head>
+<body>
+    <h1>Galería de Pokémon</h1>
+    <section id="grid"></section>
+
+    <div class="pagination">
+        <button onclick="anterior()">Anterior</button>
+        <span id="pagina-info">Página 1</span>
+        <button onclick="siguiente()">Siguiente</button>
+    </div>
+
+    <script>
+        const grid = document.querySelector('#grid');
+        let paginaActual = 0;
+        const limite = 20;
+
+        async function cargarPagina(pagina) {
+            grid.innerHTML = '';
+            const offset = pagina * limite;
+            try {
+                const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limite}&offset=${offset}`);
+                const data = await res.json();
+
+                const promesas = data.results.map(p =>
+                    fetch(p.url).then(r => r.json())
+                );
+                const detalles = await Promise.all(promesas);
+
+                detalles.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+
+                    const img = document.createElement('img');
+                    img.src = p.sprites.front_default;
+
+                    const nombre = document.createElement('div');
+                    nombre.textContent = p.name;
+
+                    card.append(img, nombre);
+                    grid.appendChild(card);
+                });
+
+                document.getElementById('pagina-info').textContent = `Página ${pagina + 1}`;
+
+            } catch (error) {
+                console.error('ERROR:', error);
+                grid.textContent = 'Error al cargar Pokémon';
+            }
+        }
+
+        function siguiente() {
+            paginaActual++;
+            cargarPagina(paginaActual);
+        }
+
+        function anterior() {
+            if(paginaActual > 0) {
+                paginaActual--;
+                cargarPagina(paginaActual);
+            }
+        }
+
+        cargarPagina(paginaActual);
+    </script>
+</body>
+</html>

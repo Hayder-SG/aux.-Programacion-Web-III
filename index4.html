@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Digimon</title>
+    <link rel="stylesheet" href="style4.css">
+    
+</head>
+<body>
+    <h1>Buscador de Digimon</h1>
+
+    <div>
+        <label>Nombre:</label>
+        <input type="text" id="nombre" placeholder="Ej: Agumon">
+        <button onclick="buscarNombre()">Buscar</button>
+    </div>
+
+    <div>
+        <label>Nivel:</label>
+        <input type="text" id="nivel" placeholder="Ej: Champion">
+        <button onclick="buscarNivel()">Buscar</button>
+    </div>
+
+    <div>
+        <button onclick="cargarTodos()">Mostrar todos</button>
+    </div>
+
+    <table id="tabla-digimon">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Nivel</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <script>
+        const tabla = document.querySelector('#tabla-digimon tbody');
+
+        async function cargarTodos() {
+            try {
+                const res = await fetch('https://digimon-api.vercel.app/api/digimon');
+                const data = await res.json();
+                renderizarTabla(data);
+            } catch (error) {
+                console.error(error);
+                tabla.innerHTML = '<tr><td colspan="2">Error al cargar Digimon</td></tr>';
+            }
+        }
+
+        async function buscarNombre() {
+            const nombre = document.getElementById('nombre').value.trim();
+            if(!nombre) return alert("Ingrese un nombre");
+
+            try {
+                const res = await fetch(`https://digimon-api.vercel.app/api/digimon/name/${nombre}`);
+                const data = await res.json();
+                renderizarTabla(data);
+            } catch (error) {
+                console.error(error);
+                tabla.innerHTML = '<tr><td colspan="2">Digimon no encontrado</td></tr>';
+            }
+        }
+
+        async function buscarNivel() {
+            const nivel = document.getElementById('nivel').value.trim();
+            if(!nivel) return alert("Ingrese un nivel");
+
+            try {
+                const res = await fetch(`https://digimon-api.vercel.app/api/digimon/level/${nivel}`);
+                const data = await res.json();
+                renderizarTabla(data);
+            } catch (error) {
+                console.error(error);
+                tabla.innerHTML = '<tr><td colspan="2">No se encontraron Digimon de ese nivel</td></tr>';
+            }
+        }
+
+        function renderizarTabla(digimons) {
+            tabla.innerHTML = '';
+            digimons.forEach(d => {
+                const fila = document.createElement('tr');
+                const nombre = document.createElement('td');
+                nombre.textContent = d.name;
+                const nivel = document.createElement('td');
+                nivel.textContent = d.level;
+                fila.append(nombre, nivel);
+                tabla.appendChild(fila);
+            });
+        }
+
+        cargarTodos();
+    </script>
+</body>
+</html>

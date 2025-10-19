@@ -1,0 +1,36 @@
+body { 
+    background-color: rgb(123, 222, 252);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 15px; 
+    text-align: center;
+}
+input, button { 
+    color: rgb(0, 0, 0);
+    background-color: rgb(167, 255, 255);
+    padding: 5px; 
+    margin: 5px; 
+    border-radius: 10px;
+}
+input, button:hover { 
+    color: rgb(0, 0, 0);
+    background-color: rgb(167, 255, 255);
+    padding: 7px; 
+    margin: 5px; 
+    border-radius: 10px;
+}
+table { 
+    border-collapse: collapse; 
+    margin: auto;
+    width: 80%; 
+    margin-top: 20px; 
+}
+th, td { 
+    border: 2px solid #000000; 
+    padding: 8px; 
+    text-align: left; 
+    background-color: rgb(57, 182, 255);
+    text-align: center;
+}
+th { 
+    background-color: #4b99ff; 
+}
